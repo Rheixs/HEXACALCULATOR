@@ -1,0 +1,868 @@
+package planb;
+
+
+public class NewJFrame extends javax.swing.JFrame {
+  double number, ans;
+  int operators;
+  private boolean operatorTyped = false;
+  private boolean decimalAdded = false; 
+  private boolean operate = false;
+    
+    
+    public NewJFrame() {
+        initComponents();
+        
+        A.setEnabled(false);
+        B.setEnabled(false);
+        C.setEnabled(false);
+        D.setEnabled(false);
+        E.setEnabled(false);
+        F.setEnabled(false);
+        
+    }
+
+    public void calcu(){
+      String expression = leo.getText();
+    try {
+        double result = evaluateExpression(expression);
+        String formattedResult;
+
+        if (result == (int) result) {
+            formattedResult = String.format("%d", (int) result);
+            decimalAdded = false;
+        } else {
+            formattedResult = String.format("%.2f", result);
+            decimalAdded = true;
+            
+        }
+
+        leo.setText(formattedResult);
+    } catch (Exception ex) {
+       leo.setText("");
+    }
+    operate = false;
+  }
+    private boolean isOperator(String input) {
+    return "+-*/".contains(input);
+  }
+  public void hexAddition() {
+    String input = leo.getText();
+    
+    try {
+        String[] parts = input.split("\\+");
+        
+        if (parts.length == 2) {
+            String hex1 = parts[0].trim();
+            String hex2 = parts[1].trim();
+            
+            if (isValidHexadecimal(hex1) && isValidHexadecimal(hex2)) {
+                int decimal1 = Integer.parseInt(hex1, 16);
+                int decimal2 = Integer.parseInt(hex2, 16);
+                int sum = decimal1 + decimal2;
+                
+                String result = Integer.toHexString(sum).toUpperCase();
+                leo.setText(result);
+            } else {
+                leo.setText("Invalid hexadecimal input.");
+            }
+        } else {
+            leo.setText("Invalid input format. Please use 'hex1 + hex2' format.");
+        }
+    } catch (NumberFormatException ex) {
+        leo.setText("Invalid hexadecimal input.");
+    }
+}
+    
+    private static double evaluateExpression(String expression) {
+        try {
+            return new Object() {
+                int pos = -1, ch;
+
+                void nextChar() {
+                    ch = (++pos < expression.length()) ? expression.charAt(pos) : -1;
+                }
+
+                boolean eat(int charToEat) {
+                    while (Character.isWhitespace(ch)) nextChar();
+                    if (ch == charToEat) {
+                        nextChar();
+                        return true;
+                    }
+                    return false;
+                }
+
+                double parse() {
+                    nextChar();
+                    double x = parseExpression();
+                    if (pos < expression.length()) throw new RuntimeException("Unexpected: " + (char) ch);
+                    return x;
+                }
+
+                double parseExpression() {
+                    double x = parseTerm();
+                    for (; ; ) {
+                        if (eat('+')) x += parseTerm(); // addition
+                        else if (eat('-')) x -= parseTerm(); // subtraction
+                        else return x;
+                    }
+                }
+
+                double parseTerm() {
+                    double x = parseFactor();
+                    for (; ; ) {
+                        if (eat('*')) x *= parseFactor(); // multiplication
+                        else if (eat('÷')) x /= parseFactor(); // division
+                        else return x;
+                    }
+                }
+
+                double parseFactor() {
+                    if (eat('+')) return parseFactor(); // unary plus
+                    if (eat('-')) return -parseFactor(); // unary minus
+
+                    double x;
+                    int startPos = this.pos;
+                    if (eat('(')) { // parentheses
+                        x = parseExpression();
+                        eat(')');
+                    } else if (Character.isDigit(ch) || ch == '.') { // numbers
+                        while (Character.isDigit(ch) || ch == '.') nextChar();
+                        x = Double.parseDouble(expression.substring(startPos, this.pos));
+                    } else {
+                        throw new RuntimeException("Unexpected: " + (char) ch);
+                    }
+
+                    return x;
+                }
+            }.parse();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid expression: " + expression);
+        }
+    }
+    private boolean isValidHexadecimal(String hex) {
+    // Check if the string consists of valid hexadecimal characters
+    return hex.matches("^[0-9A-Fa-f]+$");
+}
+    
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        leo = new javax.swing.JTextField();
+        add = new javax.swing.JButton();
+        A = new javax.swing.JButton();
+        B = new javax.swing.JButton();
+        C = new javax.swing.JButton();
+        D = new javax.swing.JButton();
+        E = new javax.swing.JButton();
+        F = new javax.swing.JButton();
+        seven = new javax.swing.JButton();
+        four = new javax.swing.JButton();
+        one = new javax.swing.JButton();
+        zero = new javax.swing.JButton();
+        delete = new javax.swing.JButton();
+        addsub = new javax.swing.JButton();
+        eight = new javax.swing.JButton();
+        nine = new javax.swing.JButton();
+        multiply = new javax.swing.JButton();
+        five = new javax.swing.JButton();
+        six = new javax.swing.JButton();
+        divide = new javax.swing.JButton();
+        two = new javax.swing.JButton();
+        three = new javax.swing.JButton();
+        subtract = new javax.swing.JButton();
+        dot = new javax.swing.JButton();
+        equal = new javax.swing.JButton();
+        HX = new javax.swing.JCheckBox();
+        CL = new javax.swing.JCheckBox();
+        e = new javax.swing.JLabel();
+        clear1 = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+
+        jPanel1.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel1.setLayout(null);
+
+        leo.setBackground(new java.awt.Color(255, 255, 255));
+        leo.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
+        leo.setForeground(new java.awt.Color(0, 0, 0));
+        leo.setCaretColor(new java.awt.Color(51, 51, 51));
+        leo.setSelectionColor(new java.awt.Color(0, 0, 0));
+        leo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                leoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(leo);
+        leo.setBounds(30, 30, 390, 90);
+
+        add.setBackground(new java.awt.Color(204, 204, 204));
+        add.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        add.setForeground(new java.awt.Color(0, 0, 0));
+        add.setText("+");
+        add.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addActionPerformed(evt);
+            }
+        });
+        jPanel1.add(add);
+        add.setBounds(350, 460, 70, 60);
+
+        A.setBackground(new java.awt.Color(204, 204, 204));
+        A.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        A.setText("A");
+        A.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        A.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AActionPerformed(evt);
+            }
+        });
+        jPanel1.add(A);
+        A.setBounds(30, 180, 70, 60);
+
+        B.setBackground(new java.awt.Color(204, 204, 204));
+        B.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        B.setText("B");
+        B.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        B.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BActionPerformed(evt);
+            }
+        });
+        jPanel1.add(B);
+        B.setBounds(110, 180, 70, 60);
+
+        C.setBackground(new java.awt.Color(204, 204, 204));
+        C.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        C.setText("C");
+        C.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        C.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CActionPerformed(evt);
+            }
+        });
+        jPanel1.add(C);
+        C.setBounds(30, 250, 70, 60);
+
+        D.setBackground(new java.awt.Color(204, 204, 204));
+        D.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        D.setText("D");
+        D.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        D.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DActionPerformed(evt);
+            }
+        });
+        jPanel1.add(D);
+        D.setBounds(30, 320, 70, 60);
+
+        E.setBackground(new java.awt.Color(204, 204, 204));
+        E.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        E.setText("E");
+        E.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        E.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EActionPerformed(evt);
+            }
+        });
+        jPanel1.add(E);
+        E.setBounds(30, 390, 70, 60);
+
+        F.setBackground(new java.awt.Color(204, 204, 204));
+        F.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        F.setText("F");
+        F.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        F.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FActionPerformed(evt);
+            }
+        });
+        jPanel1.add(F);
+        F.setBounds(30, 460, 70, 60);
+
+        seven.setBackground(new java.awt.Color(102, 102, 102));
+        seven.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        seven.setForeground(new java.awt.Color(255, 255, 255));
+        seven.setText("7");
+        seven.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        seven.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sevenActionPerformed(evt);
+            }
+        });
+        jPanel1.add(seven);
+        seven.setBounds(110, 250, 70, 60);
+
+        four.setBackground(new java.awt.Color(102, 102, 102));
+        four.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        four.setForeground(new java.awt.Color(255, 255, 255));
+        four.setText("4");
+        four.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        four.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fourActionPerformed(evt);
+            }
+        });
+        jPanel1.add(four);
+        four.setBounds(110, 320, 70, 60);
+
+        one.setBackground(new java.awt.Color(102, 102, 102));
+        one.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        one.setForeground(new java.awt.Color(255, 255, 255));
+        one.setText("1");
+        one.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        one.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                oneActionPerformed(evt);
+            }
+        });
+        jPanel1.add(one);
+        one.setBounds(110, 390, 70, 60);
+
+        zero.setBackground(new java.awt.Color(102, 102, 102));
+        zero.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        zero.setForeground(new java.awt.Color(255, 255, 255));
+        zero.setText("0");
+        zero.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        zero.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zeroActionPerformed(evt);
+            }
+        });
+        jPanel1.add(zero);
+        zero.setBounds(110, 460, 70, 60);
+
+        delete.setBackground(new java.awt.Color(102, 102, 102));
+        delete.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        delete.setForeground(new java.awt.Color(255, 255, 255));
+        delete.setText("DEL");
+        delete.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteActionPerformed(evt);
+            }
+        });
+        jPanel1.add(delete);
+        delete.setBounds(190, 180, 70, 60);
+
+        addsub.setBackground(new java.awt.Color(204, 204, 204));
+        addsub.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        addsub.setForeground(new java.awt.Color(0, 0, 0));
+        addsub.setText("+/-");
+        addsub.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        addsub.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addsubActionPerformed(evt);
+            }
+        });
+        jPanel1.add(addsub);
+        addsub.setBounds(350, 180, 70, 60);
+
+        eight.setBackground(new java.awt.Color(102, 102, 102));
+        eight.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        eight.setForeground(new java.awt.Color(255, 255, 255));
+        eight.setText("8");
+        eight.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        eight.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eightActionPerformed(evt);
+            }
+        });
+        jPanel1.add(eight);
+        eight.setBounds(190, 250, 70, 60);
+
+        nine.setBackground(new java.awt.Color(102, 102, 102));
+        nine.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        nine.setForeground(new java.awt.Color(255, 255, 255));
+        nine.setText("9");
+        nine.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        nine.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nineActionPerformed(evt);
+            }
+        });
+        jPanel1.add(nine);
+        nine.setBounds(270, 250, 70, 60);
+
+        multiply.setBackground(new java.awt.Color(204, 204, 204));
+        multiply.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        multiply.setForeground(new java.awt.Color(0, 0, 0));
+        multiply.setText("x");
+        multiply.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        multiply.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                multiplyActionPerformed(evt);
+            }
+        });
+        jPanel1.add(multiply);
+        multiply.setBounds(350, 250, 70, 60);
+
+        five.setBackground(new java.awt.Color(102, 102, 102));
+        five.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        five.setForeground(new java.awt.Color(255, 255, 255));
+        five.setText("5");
+        five.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        five.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fiveActionPerformed(evt);
+            }
+        });
+        jPanel1.add(five);
+        five.setBounds(190, 320, 70, 60);
+
+        six.setBackground(new java.awt.Color(102, 102, 102));
+        six.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        six.setForeground(new java.awt.Color(255, 255, 255));
+        six.setText("6");
+        six.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        six.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sixActionPerformed(evt);
+            }
+        });
+        jPanel1.add(six);
+        six.setBounds(270, 320, 70, 60);
+
+        divide.setBackground(new java.awt.Color(204, 204, 204));
+        divide.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        divide.setForeground(new java.awt.Color(0, 0, 0));
+        divide.setText("÷");
+        divide.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        divide.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                divideActionPerformed(evt);
+            }
+        });
+        jPanel1.add(divide);
+        divide.setBounds(350, 320, 70, 60);
+
+        two.setBackground(new java.awt.Color(102, 102, 102));
+        two.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        two.setForeground(new java.awt.Color(255, 255, 255));
+        two.setText("2");
+        two.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        two.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                twoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(two);
+        two.setBounds(190, 390, 70, 60);
+
+        three.setBackground(new java.awt.Color(102, 102, 102));
+        three.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        three.setForeground(new java.awt.Color(255, 255, 255));
+        three.setText("3");
+        three.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        three.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                threeActionPerformed(evt);
+            }
+        });
+        jPanel1.add(three);
+        three.setBounds(270, 390, 70, 60);
+
+        subtract.setBackground(new java.awt.Color(204, 204, 204));
+        subtract.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        subtract.setForeground(new java.awt.Color(0, 0, 0));
+        subtract.setText("-");
+        subtract.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        subtract.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                subtractActionPerformed(evt);
+            }
+        });
+        jPanel1.add(subtract);
+        subtract.setBounds(350, 390, 70, 60);
+
+        dot.setBackground(new java.awt.Color(102, 102, 102));
+        dot.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        dot.setForeground(new java.awt.Color(255, 255, 255));
+        dot.setText(".");
+        dot.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        dot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dotActionPerformed(evt);
+            }
+        });
+        jPanel1.add(dot);
+        dot.setBounds(190, 460, 70, 60);
+
+        equal.setBackground(new java.awt.Color(204, 204, 204));
+        equal.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        equal.setForeground(new java.awt.Color(0, 0, 0));
+        equal.setText("=");
+        equal.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        equal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                equalActionPerformed(evt);
+            }
+        });
+        jPanel1.add(equal);
+        equal.setBounds(270, 460, 70, 60);
+
+        HX.setBackground(new java.awt.Color(102, 102, 102));
+        HX.setForeground(new java.awt.Color(255, 255, 255));
+        HX.setText("HEX");
+        HX.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                HXActionPerformed(evt);
+            }
+        });
+        jPanel1.add(HX);
+        HX.setBounds(360, 150, 51, 24);
+
+        CL.setBackground(new java.awt.Color(102, 102, 102));
+        CL.setForeground(new java.awt.Color(255, 255, 255));
+        CL.setText("CAL");
+        CL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CLActionPerformed(evt);
+            }
+        });
+        jPanel1.add(CL);
+        CL.setBounds(360, 130, 51, 24);
+        jPanel1.add(e);
+        e.setBounds(520, 20, 10, 10);
+
+        clear1.setBackground(new java.awt.Color(102, 102, 102));
+        clear1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        clear1.setForeground(new java.awt.Color(255, 255, 255));
+        clear1.setText("AC");
+        clear1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        clear1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clear1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(clear1);
+        clear1.setBounds(270, 180, 70, 60);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+ 
+    
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
+        // TODO add your handling code here:
+         if (!operate) {
+            leo.setText(leo.getText() + "+");
+            operate = true;
+        }
+       decimalAdded = false;    
+                    
+        
+    }//GEN-LAST:event_addActionPerformed
+
+    private void leoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_leoActionPerformed
+
+    private void AActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AActionPerformed
+        leo.setText(leo.getText()+"A");
+        e.setText(e.getText()+"A");
+    }//GEN-LAST:event_AActionPerformed
+
+    private void BActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BActionPerformed
+        leo.setText(leo.getText()+"B");
+        e.setText(e.getText()+"B");
+    }//GEN-LAST:event_BActionPerformed
+
+    private void CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CActionPerformed
+        leo.setText(leo.getText()+"C");
+        e.setText(e.getText()+"C");
+    }//GEN-LAST:event_CActionPerformed
+
+    private void DActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DActionPerformed
+        leo.setText(leo.getText()+"D");
+        e.setText(e.getText()+"D");
+    }//GEN-LAST:event_DActionPerformed
+
+    private void EActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EActionPerformed
+        leo.setText(leo.getText()+"E");
+        e.setText(e.getText()+"E");
+    }//GEN-LAST:event_EActionPerformed
+
+    private void FActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FActionPerformed
+        leo.setText(leo.getText()+"F");
+        e.setText(e.getText()+"F");
+    }//GEN-LAST:event_FActionPerformed
+
+    private void sevenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sevenActionPerformed
+        leo.setText(leo.getText()+"7");
+       e.setText(e.getText()+"7");
+    }//GEN-LAST:event_sevenActionPerformed
+
+    private void fourActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fourActionPerformed
+        leo.setText(leo.getText()+"4");
+        e.setText(e.getText()+"4");
+    }//GEN-LAST:event_fourActionPerformed
+
+    private void oneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_oneActionPerformed
+        leo.setText(leo.getText()+"1");
+        e.setText(e.getText()+"1");
+    }//GEN-LAST:event_oneActionPerformed
+
+    private void zeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zeroActionPerformed
+        leo.setText(leo.getText()+"0");
+        e.setText(e.getText()+"0");
+    }//GEN-LAST:event_zeroActionPerformed
+
+    private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
+        int length = leo.getText().length();
+        int current = leo.getText().length()-1;
+        
+        String Store;
+        
+        if (length>0){
+            StringBuilder BackSpace = new StringBuilder(leo.getText());
+            BackSpace.deleteCharAt(current);
+            Store =BackSpace.toString();
+            leo.setText(Store); 
+        }
+        decimalAdded = false;
+         operate = false;
+    }//GEN-LAST:event_deleteActionPerformed
+
+    private void addsubActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addsubActionPerformed
+        try {
+    String input = leo.getText();
+        int lastIndex = -1;
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if (c == '+' || c == '-' || c == '*' || c == '÷') {
+                lastIndex = i;
+            }
+        }
+        if (lastIndex != -1) {
+            String beforeOperator = input.substring(0, lastIndex + 1);
+            String afterOperator = input.substring(lastIndex + 1);
+            if (afterOperator.contains(".")) {
+                double number = Double.parseDouble(afterOperator);
+                number = -number;
+                afterOperator = String.valueOf(number);
+            } else {
+                int number = Integer.parseInt(afterOperator);
+                number = -number;
+                afterOperator = String.valueOf(number);
+            }
+            String updatedInput = beforeOperator + afterOperator;
+            leo.setText(updatedInput.replaceAll("--", ""));
+        } else { 
+            if (input.startsWith("-")) { 
+                leo.setText(input.substring(1));
+            } else { 
+                leo.setText("-" + input);
+            }
+        }
+    } catch (NumberFormatException ex) { // Handle NumberFormatException
+    }
+    }//GEN-LAST:event_addsubActionPerformed
+
+    private void eightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eightActionPerformed
+        leo.setText(leo.getText()+"8");
+        e.setText(e.getText()+"8");
+    }//GEN-LAST:event_eightActionPerformed
+
+    private void nineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nineActionPerformed
+        leo.setText(leo.getText()+"9");
+        e.setText(e.getText()+"9");
+    }//GEN-LAST:event_nineActionPerformed
+
+    private void multiplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_multiplyActionPerformed
+        if (!operate) {
+        if(leo.getText().equals("")){
+           operate = false; 
+        }else{
+        leo.setText(leo.getText() + "*");
+        operate = true;
+        }
+    }
+        decimalAdded = false;
+         
+        
+    }//GEN-LAST:event_multiplyActionPerformed
+
+    private void fiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fiveActionPerformed
+        leo.setText(leo.getText()+"5");
+        e.setText(e.getText()+"5");
+    }//GEN-LAST:event_fiveActionPerformed
+
+    private void sixActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sixActionPerformed
+        leo.setText(leo.getText()+"6");
+        e.setText(e.getText()+"6");
+    }//GEN-LAST:event_sixActionPerformed
+
+    private void divideActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_divideActionPerformed
+        // TODO add your handling code here:
+       if (!operate) {
+        if(leo.getText().equals("")){
+           operate = false; 
+        }else{
+        leo.setText(leo.getText() + "/");
+        operate = true;
+        }
+    }
+        decimalAdded = false;
+    }//GEN-LAST:event_divideActionPerformed
+
+    private void twoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_twoActionPerformed
+        leo.setText(leo.getText()+"2");
+        e.setText(e.getText()+"2");
+    }//GEN-LAST:event_twoActionPerformed
+
+    private void threeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_threeActionPerformed
+        leo.setText(leo.getText()+"3");
+        e.setText(e.getText()+"3");
+    }//GEN-LAST:event_threeActionPerformed
+
+    private void subtractActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subtractActionPerformed
+        // TODO add your handling code here:
+        if (!operate){
+               leo.setText(leo.getText()  + "-" );
+               operate = true;
+           
+       }
+       decimalAdded = false;
+  
+    }//GEN-LAST:event_subtractActionPerformed
+
+    private void dotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dotActionPerformed
+        if (!leo.getText().contains(".")) {
+        leo.setText(leo.getText() + ".");
+        }
+    }//GEN-LAST:event_dotActionPerformed
+
+
+    private void equalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_equalActionPerformed
+           if(CL.isSelected()){
+           calcu();
+        }else if (HX.isSelected()){
+           hexAddition();
+        }else{
+            
+        } 
+    }//GEN-LAST:event_equalActionPerformed
+
+    private void CLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CLActionPerformed
+       HX.setSelected(false);
+       A.setEnabled(false);
+       B.setEnabled(false);
+       C.setEnabled(false);
+       D.setEnabled(false);
+       E.setEnabled(false);
+       F.setEnabled(false);
+       leo.setText("");
+       subtract.setEnabled(true);
+       addsub.setEnabled(true);
+       divide.setEnabled(true);
+       add.setEnabled(true); 
+    }//GEN-LAST:event_CLActionPerformed
+
+    private void HXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HXActionPerformed
+        CL.setSelected(false);
+       A.setEnabled(true);
+       B.setEnabled(true);
+       C.setEnabled(true);
+       D.setEnabled(true);
+       E.setEnabled(true);
+       F.setEnabled(true);
+       subtract.setEnabled(false);
+       divide.setEnabled(false);
+       addsub.setEnabled(false);
+       add.setEnabled(false);      
+    }//GEN-LAST:event_HXActionPerformed
+
+    private void clear1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clear1ActionPerformed
+        // TODO add your handling code here:
+        leo.setText ("");
+    }//GEN-LAST:event_clear1ActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new NewJFrame().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton A;
+    private javax.swing.JButton B;
+    private javax.swing.JButton C;
+    private javax.swing.JCheckBox CL;
+    private javax.swing.JButton D;
+    private javax.swing.JButton E;
+    private javax.swing.JButton F;
+    private javax.swing.JCheckBox HX;
+    private javax.swing.JButton add;
+    private javax.swing.JButton addsub;
+    private javax.swing.JButton clear1;
+    private javax.swing.JButton delete;
+    private javax.swing.JButton divide;
+    private javax.swing.JButton dot;
+    private javax.swing.JLabel e;
+    private javax.swing.JButton eight;
+    private javax.swing.JButton equal;
+    private javax.swing.JButton five;
+    private javax.swing.JButton four;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField leo;
+    private javax.swing.JButton multiply;
+    private javax.swing.JButton nine;
+    private javax.swing.JButton one;
+    private javax.swing.JButton seven;
+    private javax.swing.JButton six;
+    private javax.swing.JButton subtract;
+    private javax.swing.JButton three;
+    private javax.swing.JButton two;
+    private javax.swing.JButton zero;
+    // End of variables declaration//GEN-END:variables
+
+}
